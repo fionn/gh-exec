@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -21,13 +22,15 @@ func getToken() (string, error) {
 }
 
 func main() {
+	log.SetFlags(0)
+
 	if len(os.Args) < 2 {
-		panic("Too few arguments")
+		log.Fatal("Too few arguments")
 	}
 
 	token, err := getToken()
 	if err != nil {
-		panic(err)
+		log.Fatalf("Authentication token not found: %s", err.Error())
 	}
 
 	cmd := exec.Command(os.Args[1], os.Args[2:]...)
@@ -40,6 +43,6 @@ func main() {
 		if exitError, ok := err.(*exec.ExitError); ok {
 			os.Exit(exitError.ExitCode())
 		}
-		panic(err)
+		log.Fatalf("Error executing command: %s", err.Error())
 	}
 }
